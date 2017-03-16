@@ -4,42 +4,77 @@ var http = require('http');
 var mysql = require('mysql');
 var connection = mysql.createConnection({
     host: 'localhost',
-    user: 'ticho',
-    password: '400RAY4201db3rg!',
+    user: '',
+    password: '',
     database : 'slovak_english'
 });
 
 console.log('MySQL Connection details  '+connection);
 
-http.createServer(function (request, response)
-{
-        console.log('Creating the http server');
-        connection.query('SELECT * FROM s_e_dictionary', function(err, rows, fields)
+connection.query('SELECT * FROM s_e_dictionary', function(err, rows, fields)
         {
-                console.log('Connection result error '+err);
-                console.log('no of records is '+rows.length);
-                response.writeHead(200, { 'Content-Type': 'application/json'});
-                response.end(JSON.stringify(rows));
-                response.end();
-        });
+        if(err) {
+            throw err;
+        }
+        else {
+                var objJson = {
+                    "GroupName": "D",
+                    "count": 7,
+                    "teams" : JSON.stringify(rows)
+                }
+                console.log("stringify: " + JSON.stringify(rows));
+                console.log("objJson: " + objJson.teams);
 
-}).listen(8084);
+            };
+       return objJson;
+
+        })
+
+//objJSON is coming back undefined
+        exports.teamlist = objJson;
+
+
+/*  var objJson = {
+    "GroupName": "D",
+    "count": 7,
+    "teams": [ {"id":1,"english":"hello","slovak":"ahoj","image":"say-ahoj-2in.png"},
+     {"id":2,"english":"good","slovak":"dobrý","image":"dobry-2in.png"},
+     {"id":3,"english":"goodbye","slovak":"do videnia","image":"wave-2in.png"},
+     {"id":4,"english":"how many/much?","slovak":"kol'ko?","image":"counting-2in.png"},
+     {"id":5,"english":"house","slovak":"dom","image":"house-2in.png"},
+     {"id":6,"english":"how?","slovak":"ako?","image":"confused-2in.png"},
+     {"id":7,"english":"March","slovak":"marec","image":"cal-2in.png"} ]
+  };
+*/
+
+
+
+/*function setValue(value) {
+  objJson = value;
+  return objJson;
+
+}
+*/
 
 //Just an FYI on query parameters
 //WHERE id IN (?,?)',[1, 7]
 
-/*var http = require("http");
 
-http.createServer(function (request, response) {
-
-   // Send the HTTP header
-   // HTTP Status: 200 : OK
-   // Content Type: text/plain
-   response.writeHead(200, {'Content-Type': 'text/plain'});
-
-   // Send the response body as "Hello World"
-   response.end('Hello World\nI love you!');
-}).listen(8081);
-
-// Console will print the message
-console.log('Server running at http://127.0.0.1:8081/');*/
+/*var thelist = function() {
+  var objJson = {
+    "GroupName": "D",
+    "count": 4,
+    "teams": [{
+      "country": "England"
+    }, {
+      "country": "France"
+    }, {
+      "country": "Sweden"
+    }, {
+      "country": "Ukraine"
+    }]
+  };
+  return objJson;
+};
+exports.teamlist = thelist();
+*/
